@@ -53,7 +53,7 @@ function Dashboard() {
         const token = localStorage.getItem('token');
         fetch('http://localhost:3000/api/orders', {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${oken}`
             }
         })
             .then(res => res.json())
@@ -124,7 +124,7 @@ function Dashboard() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${oken}`
             },
             body: JSON.stringify(orderData)
         })
@@ -194,7 +194,7 @@ function Dashboard() {
                                     <h3>{product.name}</h3>
                                     <p className="provider">Provider: {product.provider}</p>
                                     <p className="description">{product.description}</p>
-                                    <p className="price">€{product.price.toFixed(2)}</p>
+                                    <p className=\"price\">�${roduct.price.toFixed(2)}</p>
                                     <button onClick={() => addToCart(product)}>Add to Cart</button>
                                 </div>
                             ))}
@@ -213,7 +213,7 @@ function Dashboard() {
                                             <img src={item.image} alt={item.name} className="cart-item-image" />
                                             <div className="cart-item-info">
                                                 <h4>{item.name}</h4>
-                                                <p className="cart-item-price">€{item.price.toFixed(2)} × {item.quantity} = €{(item.price * item.quantity).toFixed(2)}</p>
+                                                <p className=\"cart-item-price\">${tem.price.toFixed(2)} × {item.quantity} = ${(item.price * item.quantity).toFixed(2)}</p>
                                             </div>
                                             <div className="cart-item-controls">
                                                 {item.quantity === 1 ? (
@@ -228,20 +228,12 @@ function Dashboard() {
                                     ))}
                                 </div>
                                 <div className="cart-total">
-                                    <h3>Total: €{getTotalPrice()}</h3>
+                                    <h3>Total: ${etTotalPrice()}</h3>
                                     <button onClick={placeOrder} className="place-order-btn">Place Order</button>
                                 </div>
                             </>
                         )}
                     </div>
-
-                    {/* Food Facts Box */}
-                    {currentFact && (
-                        <div className="food-facts-box">
-                            <h3>Did you know...</h3>
-                            <p>{currentFact}</p>
-                        </div>
-                    )}
                 </div>
             ) : (
                 <div className="orders-section">
@@ -263,7 +255,7 @@ function Dashboard() {
                                                 <div key={order.id} className="order-card">
                                                     <div className="order-header">
                                                         <h4>Order #{order.id}</h4>
-                                                        <span className={`status ${order.status}`}>{order.status}</span>
+                                                        <span className={`status ${rder.status}`}>{order.status}</span>
                                                     </div>
                                                     <div className="pickup-code-highlight">
                                                         <strong>Pickup Code:</strong>
@@ -284,12 +276,12 @@ function Dashboard() {
                                                                             <span className="item-provider">by {item.provider}</span>
                                                                         </div>
                                                                         <span className="item-qty">× {item.quantity}</span>
-                                                                        <span className="item-price">€{(item.price * item.quantity).toFixed(2)}</span>
+                                                                        <span className="item-price\">${(item.price * item.quantity).toFixed(2)}</span>
                                                                     </div>
                                                                 ))}
                                                                 <div className="order-total-row">
                                                                     <span>Total:</span>
-                                                                    <span className="total-amount">€{order.totalPrice}</span>
+                                                                    <span className="total-amount\">${rder.totalPrice}</span>
                                                                 </div>
                                                             </div>
                                                         ) : (
@@ -315,7 +307,7 @@ function Dashboard() {
                                                 <div key={order.id} className="order-card past">
                                                     <div className="order-header">
                                                         <h4>Order #{order.id}</h4>
-                                                        <span className={`status ${order.status}`}>{order.status}</span>
+                                                        <span className={`status ${rder.status}`}>{order.status}</span>
                                                     </div>
                                                     <div className="order-details">
                                                         <p><strong>Pickup Code:</strong> {order.pickupCode}</p>
@@ -333,12 +325,12 @@ function Dashboard() {
                                                                             <span className="item-provider">by {item.provider}</span>
                                                                         </div>
                                                                         <span className="item-qty">× {item.quantity}</span>
-                                                                        <span className="item-price">€{(item.price * item.quantity).toFixed(2)}</span>
+                                                                        <span className="item-price\">${(item.price * item.quantity).toFixed(2)}</span>
                                                                     </div>
                                                                 ))}
                                                                 <div className="order-total-row">
                                                                     <span>Total:</span>
-                                                                    <span className="total-amount">€{order.totalPrice}</span>
+                                                                    <span className="total-amount\">${rder.totalPrice}</span>
                                                                 </div>
                                                             </div>
                                                         ) : (
@@ -391,14 +383,14 @@ function Dashboard() {
                                     <ul>
                                         {orderConfirmation.items.map((item, idx) => (
                                             <li key={idx}>
-                                                {item.name} × {item.quantity} - €{(item.price * item.quantity).toFixed(2)}
+                                                {item.name} × {item.quantity} - ${(item.price * item.quantity).toFixed(2)}
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
                                 <div className="summary-row total">
                                     <span>Total:</span>
-                                    <span>€{orderConfirmation.totalPrice}</span>
+                                    <span>${rderConfirmation.totalPrice}</span>
                                 </div>
                             </div>
                         </div>
@@ -414,3 +406,4 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
