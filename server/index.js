@@ -14,16 +14,20 @@ app.use(express.json());
 
 // Register Route
 app.post('/api/register', (req, res) => {
-    const { email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ error: "Email and password are required" });
+    if (!email || !password || !name) {
+        return res.status(400).json({ error: "Name, email and password are required" });
     }
+
+    // Validate role
+    const validRoles = ['student', 'provider'];
+    const userRole = role && validRoles.includes(role) ? role : 'student';
 
     const hashedPassword = bcrypt.hashSync(password, 8);
 
-    const sql = `INSERT INTO users (email, password, role) VALUES (?, ?, ?)`;
-    db.run(sql, [email, hashedPassword, 'student'], function (err) {
+    const sql = `INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)`;
+    db.run(sql, [name, email, hashedPassword, userRole], function (err) {
         if (err) {
             console.error(err.message);
             if (err.message.includes('UNIQUE constraint failed')) {
@@ -64,7 +68,133 @@ app.post('/api/login', (req, res) => {
         res.status(200).json({
             message: "Login successful",
             token: token,
-            user: { id: user.id, email: user.email, role: user.role }
+            user: { id: user.id, name: user.name, email: user.email, role: user.role }
+        });
+    });
+});
+
+// Middleware to verify JWT token
+const verifyToken = (req, res, next) => {
+    const token = req.headers['authorization'];
+    if (!token) {
+        return res.status(403).json({ error: 'No token provided' });
+    }
+
+    const bearerToken = token.split(' ')[1];
+    jwt.verify(bearerToken, JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        req.userId = decoded.id;
+        next();
+    });
+};
+
+// Get all products
+app.get('/api/products', (req, res) => {
+    const sql = 'SELECT * FROM products WHERE available = 1';
+    db.all(sql, [], (err, products) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json(products);
+    });
+});
+
+// Generate unique pickup code
+function generatePickupCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+}
+
+// Create order
+app.post('/api/orders', verifyToken, (req, res) => {
+    const { items, totalPrice } = req.body;
+    const userId = req.userId;
+
+    if (!items || items.length === 0) {
+        return res.status(400).json({ error: 'Order must contain items' });
+    }
+
+    const pickupCode = generatePickupCode();
+    const orderDate = new Date().toISOString();
+    // Pickup date is next day
+    const pickupDate = new Date();
+    pickupDate.setDate(pickupDate.getDate() + 1);
+
+    const orderSql = 'INSERT INTO orders (userId, totalPrice, pickupCode, orderDate, pickupDate) VALUES (?, ?, ?, ?, ?)';
+
+    db.run(orderSql, [userId, totalPrice, pickupCode, orderDate, pickupDate.toISOString()], function (err) {
+        if (err) {
+            console.error('Database error creating order:', err);
+            console.error('Error message:', err.message);
+            console.error('Error code:', err.code);
+            return res.status(500).json({ error: 'Failed to create order', details: err.message });
+        }
+
+        const orderId = this.lastID;
+        const itemSql = 'INSERT INTO order_items (orderId, productId, quantity) VALUES (?, ?, ?)';
+        const stmt = db.prepare(itemSql);
+
+        items.forEach(item => {
+            stmt.run(orderId, item.productId, item.quantity);
+        });
+
+        stmt.finalize((err) => {
+            if (err) {
+                return res.status(500).json({ error: 'Failed to save order items' });
+            }
+            res.status(201).json({
+                message: 'Order created successfully',
+                orderId: orderId,
+                pickupCode: pickupCode,
+                pickupDate: pickupDate.toISOString()
+            });
+        });
+    });
+});
+
+// Get user orders
+app.get('/api/orders', verifyToken, (req, res) => {
+    const userId = req.userId;
+
+    const sql = 'SELECT * FROM orders WHERE userId = ? ORDER BY orderDate DESC';
+    db.all(sql, [userId], (err, orders) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+
+        // Get order items for each order
+        const ordersWithItems = [];
+        let completed = 0;
+
+        if (orders.length === 0) {
+            return res.json([]);
+        }
+
+        orders.forEach(order => {
+            const itemsSql = `
+                SELECT oi.quantity, p.name, p.price, p.provider 
+                FROM order_items oi 
+                JOIN products p ON oi.productId = p.id 
+                WHERE oi.orderId = ?
+            `;
+
+            db.all(itemsSql, [order.id], (err, items) => {
+                if (!err) {
+                    order.items = items;
+                }
+                ordersWithItems.push(order);
+                completed++;
+
+                if (completed === orders.length) {
+                    res.json(ordersWithItems);
+                }
+            });
         });
     });
 });

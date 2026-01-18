@@ -1,12 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import './Auth.css';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Mouse tracking effect
+        const handleMouseMove = (e) => {
+            const orb = document.querySelector('.mouse-orb');
+            if (orb) {
+                orb.style.left = `${e.clientX}px`;
+                orb.style.top = `${e.clientY}px`;
+            }
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -27,8 +42,9 @@ function Login() {
 
     return (
         <div className="auth-wrapper">
+            <div className="mouse-orb"></div>
             <div className="auth-container">
-                <h2>Login</h2>
+                <h2>Welcome Back</h2>
                 {error && <p style={{ color: '#ff6b6b', textAlign: 'center' }}>{error}</p>}
                 <form onSubmit={handleLogin}>
                     <div className="form-group">
@@ -38,6 +54,7 @@ function Login() {
                             className="auth-input"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter your email"
                             required
                         />
                     </div>
@@ -48,6 +65,7 @@ function Login() {
                             className="auth-input"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter your password"
                             required
                         />
                     </div>
