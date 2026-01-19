@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Database
+*.db
+*.sqlite
+
+# Environment variables
+.env
+.env.local
+
+# Build outputs
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+
+# System
+.DS_Store
+Thumbs.db
