@@ -65,6 +65,24 @@
     top: 0;
 }
 
+/* App Branding */
+.app-branding {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 42px;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    pointer-events: none;
+    z-index: 1;
+    white-space: nowrap;
+    user-select: none;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
 .auth-container {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);

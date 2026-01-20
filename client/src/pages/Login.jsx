@@ -42,6 +42,7 @@ function Login() {
 
     return (
         <div className="auth-wrapper">
+            <div className="app-branding">Campus Bites</div>
             <div className="mouse-orb"></div>
             <div className="auth-container">
                 <h2>Welcome Back</h2>

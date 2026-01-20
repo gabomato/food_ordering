@@ -176,7 +176,7 @@ function Dashboard() {
         <div className="dashboard-container">
             <div className="mouse-orb"></div>
             <header className="dashboard-header">
-                <h1>School Food Pre-Order</h1>
+                <h1>Campus Bites</h1>
                 <div className="header-right">
                     {userName && (
                         <div className="user-welcome">
