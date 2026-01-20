@@ -17,12 +17,12 @@ app.post('/api/register', (req, res) => {
     const { name, email, password, role } = req.body;
 
     if (!email || !password || !name) {
-        return res.status(400).json({ error: "Name, email and password are required" });
+        return res.status(400).json({ error: "Name, Email and password are required" });
     }
 
     // Validate role
     const validRoles = ['student', 'provider'];
-    const userRole = role && validRoles.includes(role) ? role : 'student';
+    const userRole = validRoles.includes(role) ? role : 'student';
 
     const hashedPassword = bcrypt.hashSync(password, 8);
 
@@ -90,7 +90,7 @@ const verifyToken = (req, res, next) => {
     });
 };
 
-// Get all products
+// Get all products (Public)
 app.get('/api/products', (req, res) => {
     const sql = 'SELECT * FROM products WHERE available = 1';
     db.all(sql, [], (err, products) => {
@@ -98,6 +98,76 @@ app.get('/api/products', (req, res) => {
             return res.status(500).json({ error: 'Database error' });
         }
         res.json(products);
+    });
+});
+
+// Helper to check if product belongs to provider
+const verifyProductOwnership = (userId, productId, callback) => {
+    const sql = 'SELECT provider FROM products WHERE id = ?';
+    db.get(sql, [productId], (err, product) => {
+        if (err || !product) return callback(new Error('Product not found'));
+        // We compare as strings because the provider column might be text or mixed
+        if (String(product.provider) !== String(userId)) {
+            return callback(new Error('Unauthorized'));
+        }
+        callback(null);
+    });
+};
+
+// Provider: Get My Products
+app.get('/api/my-products', verifyToken, (req, res) => {
+    // Select products where provider matches user ID or matches user Name (to support legacy/sample data if needed, but primarily ID now)
+    // For now, let's assume we filter by the provider ID stored in the column
+    const sql = 'SELECT * FROM products WHERE provider = ?';
+    db.all(sql, [req.userId], (err, products) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.json(products);
+    });
+});
+
+// Provider: Add Product
+app.post('/api/products', verifyToken, (req, res) => {
+    const { name, description, price, image } = req.body;
+
+    // We treat req.userId as the "provider" identifier
+    const sql = 'INSERT INTO products (name, description, price, provider, image, available) VALUES (?, ?, ?, ?, ?, 1)';
+    db.run(sql, [name, description, price, req.userId, image], function (err) {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Failed to create product' });
+        }
+        res.status(201).json({ id: this.lastID, name, description, price, provider: req.userId, image });
+    });
+});
+
+// Provider: Update Product (Price/Avail)
+app.put('/api/products/:id', verifyToken, (req, res) => {
+    const productId = req.params.id;
+    const { price } = req.body;
+
+    verifyProductOwnership(req.userId, productId, (err) => {
+        if (err) return res.status(403).json({ error: err.message });
+
+        const sql = 'UPDATE products SET price = ? WHERE id = ?';
+        db.run(sql, [price, productId], (err) => {
+            if (err) return res.status(500).json({ error: 'Database error' });
+            res.json({ message: 'Product updated' });
+        });
+    });
+});
+
+// Provider: Delete Product
+app.delete('/api/products/:id', verifyToken, (req, res) => {
+    const productId = req.params.id;
+
+    verifyProductOwnership(req.userId, productId, (err) => {
+        if (err) return res.status(403).json({ error: err.message });
+
+        const sql = 'DELETE FROM products WHERE id = ?';
+        db.run(sql, [productId], (err) => {
+            if (err) return res.status(500).json({ error: 'Database error' });
+            res.json({ message: 'Product deleted' });
+        });
     });
 });
 

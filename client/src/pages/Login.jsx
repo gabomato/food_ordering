@@ -34,7 +34,11 @@ function Login() {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
 
-            navigate('/dashboard');
+            if (response.data.user.role === 'provider') {
+                navigate('/provider-dashboard');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (err) {
             setError(err.response?.data?.error || 'Login failed');
         }

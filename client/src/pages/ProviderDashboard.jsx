@@ -96,6 +96,7 @@ function ProviderDashboard() {
     };
 
     const handleDelete = async (id) => {
+        console.log('Delete clicked for product ID:', id);
         if (!confirm('Are you sure you want to delete this item?')) return;
         const token = localStorage.getItem('token');
 
@@ -105,22 +106,30 @@ function ProviderDashboard() {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
+            console.log('Delete response status:', res.status);
+            const data = await res.json();
+            console.log('Delete response:', data);
+
             if (res.ok) {
                 setProducts(products.filter(p => p.id !== id));
+                alert('Product deleted successfully!');
             } else {
-                alert('Failed to delete product');
+                alert('Failed to delete product: ' + (data.error || 'Unknown error'));
             }
         } catch (err) {
-            alert('Network error');
+            console.error('Delete error:', err);
+            alert('Network error: ' + err.message);
         }
     };
 
     const startEditing = (product) => {
+        console.log('Start editing product:', product);
         setEditingId(product.id);
         setEditPrice(product.price);
     };
 
     const savePrice = async (id) => {
+        console.log('Saving price for product ID:', id, 'New price:', editPrice);
         const token = localStorage.getItem('token');
         try {
             const res = await fetch(`http://localhost:3000/api/products/${id}`, {
@@ -132,14 +141,20 @@ function ProviderDashboard() {
                 body: JSON.stringify({ price: parseFloat(editPrice) })
             });
 
+            console.log('Update response status:', res.status);
+            const data = await res.json();
+            console.log('Update response:', data);
+
             if (res.ok) {
                 setProducts(products.map(p => p.id === id ? { ...p, price: parseFloat(editPrice) } : p));
                 setEditingId(null);
+                alert('Price updated successfully!');
             } else {
-                alert('Failed to update price');
+                alert('Failed to update price: ' + (data.error || 'Unknown error'));
             }
         } catch (err) {
-            alert('Network error');
+            console.error('Update error:', err);
+            alert('Network error: ' + err.message);
         }
     };
 
@@ -157,11 +172,15 @@ function ProviderDashboard() {
                     <span className="provider-badge">VENDOR MODE</span>
                 </div>
                 <div className="header-right">
-                    <div className="user-welcome">
-                        <span className="welcome-text">Welcome, </span>
-                        <span className="user-name">{userName}</span>
+                    {userName && (
+                        <div className="user-welcome">
+                            <span className="welcome-text">Welcome, </span>
+                            <span className="user-name">{userName}</span>
+                        </div>
+                    )}
+                    <div className="header-buttons">
+                        <button onClick={handleLogout} className="logout-btn">Logout</button>
                     </div>
-                    <button onClick={handleLogout} className="logout-btn">Logout</button>
                 </div>
             </header>
 

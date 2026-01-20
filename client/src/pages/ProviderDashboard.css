@@ -1,13 +1,13 @@
-/* Reuse the main container gradient from Auth.css */
+/* Main Orange Gradient Background */
 .provider-dashboard-wrapper {
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
     position: relative;
     overflow-x: hidden;
     color: white;
 }
 
-/* Background effects */
+/* Background effects (Orbs) */
 .provider-dashboard-wrapper::before,
 .provider-dashboard-wrapper::after {
     content: '';
@@ -22,20 +22,36 @@
 }
 
 .provider-dashboard-wrapper::before {
-    background: radial-gradient(circle, #f093fb 0%, #f5576c 100%);
+    background: radial-gradient(circle, #ff9a56 0%, #ff6b35 100%);
     top: -200px;
     left: -200px;
     animation: float 25s ease-in-out infinite;
 }
 
 .provider-dashboard-wrapper::after {
-    background: radial-gradient(circle, #4facfe 0%, #00f2fe 100%);
+    background: radial-gradient(circle, #ffd89b 0%, #ffb347 100%);
     bottom: -200px;
     right: -200px;
     animation: float 25s ease-in-out infinite reverse;
 }
 
-/* Header Re-styling */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(30px, -50px) scale(1.1);
+    }
+
+    66% {
+        transform: translate(-20px, 20px) scale(0.9);
+    }
+}
+
+/* Header Styling */
 .provider-header {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -73,35 +89,49 @@
     align-items: center;
 }
 
-/* User Welcome Section */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .provider-header .user-welcome {
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    display: inline-block;
 }
 
 .provider-header .welcome-text {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .provider-header .user-name {
     color: #fff;
+    font-weight: bold;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
 .provider-header .logout-btn {
-    background: rgba(255, 107, 107, 0.2);
-    border: 1px solid rgba(255, 107, 107, 0.4);
-    color: #ffcccc;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
+    font-weight: 600;
 }
 
 .provider-header .logout-btn:hover {
-    background: rgba(255, 107, 107, 0.4);
-    color: white;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
 }
 
 /* Main Content Area */
@@ -111,7 +141,6 @@
     padding: 40px;
     display: grid;
     grid-template-columns: 1fr 1.5fr;
-    /* Split layout */
     gap: 40px;
     max-width: 1400px;
     margin: 0 auto;
@@ -123,7 +152,7 @@
     }
 }
 
-/* The Card Form */
+/* The Card Form (Glassmorphism) */
 .add-product-card {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);
@@ -132,7 +161,7 @@
     border-radius: 24px;
     padding: 40px;
     width: 100%;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
     animation: slideUp 0.6s ease-out;
     height: fit-content;
     position: sticky;
@@ -144,10 +173,11 @@
     font-size: 28px;
     margin-bottom: 8px;
     text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .add-product-card .subtitle {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.8);
     text-align: center;
     margin-bottom: 32px;
     font-size: 14px;
@@ -160,9 +190,9 @@
 
 .provider-form label {
     display: block;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.95);
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -184,13 +214,13 @@
 
 .provider-form input::placeholder,
 .provider-form textarea::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .provider-form input:focus,
 .provider-form textarea:focus {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.6);
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
 }
@@ -204,10 +234,11 @@
     flex: 1;
 }
 
+/* Orange Button Style */
 .submit-btn {
     width: 100%;
     padding: 16px;
-    background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+    background: linear-gradient(135deg, #e85d04 0%, #dc2f02 100%);
     border: none;
     border-radius: 12px;
     color: #fff;
@@ -217,16 +248,18 @@
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 20px rgba(0, 176, 155, 0.4);
+    box-shadow: 0 4px 20px rgba(232, 93, 4, 0.4);
     margin-top: 10px;
+    position: relative;
+    overflow: hidden;
 }
 
 .submit-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 30px rgba(0, 176, 155, 0.6);
+    box-shadow: 0 6px 30px rgba(232, 93, 4, 0.6);
 }
 
-/* RIGHT COLUMN: MY MENU LIST */
+/* Menu Section */
 .my-menu-section {
     animation: slideUp 0.6s ease-out 0.2s backwards;
 }
@@ -258,8 +291,8 @@
 
 .menu-card:hover {
     transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .menu-card img {
@@ -268,6 +301,7 @@
     object-fit: cover;
     border-radius: 12px;
     margin-bottom: 12px;
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .menu-card-details {
@@ -282,7 +316,7 @@
 
 .menu-card .desc {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.8);
     margin-bottom: 12px;
     line-height: 1.4;
 }
@@ -299,7 +333,8 @@
 .price-tag {
     font-size: 20px;
     font-weight: bold;
-    color: #96c93d;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .menu-actions {
@@ -318,25 +353,24 @@
 }
 
 .edit-btn {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
     color: white;
 }
 
 .edit-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.4);
 }
 
 .delete-btn {
-    background: rgba(255, 107, 107, 0.2);
-    color: #ffcccc;
-}
-
-.delete-btn:hover {
-    background: rgba(255, 107, 107, 0.4);
+    background: rgba(220, 53, 69, 0.6);
     color: white;
 }
 
-/* Edit Mode Styles */
+.delete-btn:hover {
+    background: rgba(220, 53, 69, 0.8);
+}
+
+/* Edit Inputs */
 .edit-price-input {
     width: 80px;
     padding: 4px 8px;
@@ -348,11 +382,15 @@
 }
 
 .save-btn {
-    background: #96c93d;
+    background: #28a745;
     color: white;
 }
 
-/* Success/Error Message */
+.save-btn:hover {
+    background: #218838;
+}
+
+/* Messages */
 .message-banner {
     padding: 12px;
     border-radius: 8px;
@@ -363,15 +401,15 @@
 }
 
 .message-banner.success {
-    background: rgba(40, 167, 69, 0.2);
+    background: rgba(40, 167, 69, 0.3);
     border: 1px solid rgba(40, 167, 69, 0.5);
-    color: #d4edda;
+    color: #e8f5e9;
 }
 
 .message-banner.error {
-    background: rgba(255, 107, 107, 0.2);
-    border: 1px solid rgba(255, 107, 107, 0.5);
-    color: #ffdce0;
+    background: rgba(220, 53, 69, 0.3);
+    border: 1px solid rgba(220, 53, 69, 0.5);
+    color: #ffebee;
 }
 
 @keyframes fadeIn {
