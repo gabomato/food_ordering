@@ -47,6 +47,18 @@ function Dashboard() {
 
         // Fetch user orders
         fetchOrders();
+
+        // Mouse tracking effect
+        const handleMouseMove = (e) => {
+            const orb = document.querySelector('.mouse-orb');
+            if (orb) {
+                orb.style.left = `${e.clientX}px`;
+                orb.style.top = `${e.clientY}px`;
+            }
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
     }, [navigate]);
 
     const fetchOrders = () => {
@@ -162,6 +174,7 @@ function Dashboard() {
 
     return (
         <div className="dashboard-container">
+            <div className="mouse-orb"></div>
             <header className="dashboard-header">
                 <h1>School Food Pre-Order</h1>
                 <div className="header-right">
@@ -262,7 +275,7 @@ function Dashboard() {
                                             .map(order => (
                                                 <div key={order.id} className="order-card">
                                                     <div className="order-header">
-                                                        <h4>Order #{order.id}</h4>
+                                                        <h4>🎫 Order #{order.id}</h4>
                                                         <span className={`status ${order.status}`}>{order.status}</span>
                                                     </div>
                                                     <div className="pickup-code-highlight">
@@ -271,7 +284,9 @@ function Dashboard() {
                                                     </div>
                                                     <div className="order-details">
                                                         <p><strong>Order Date:</strong> {new Date(order.orderDate).toLocaleDateString()}</p>
-                                                        <p><strong>Pickup Date:</strong> {new Date(order.pickupDate).toLocaleDateString()}</p>
+                                                        <p><strong>📅 Pickup Date:</strong> {new Date(order.pickupDate).toLocaleDateString()}</p>
+                                                        <p><strong>🕐 Pickup Time:</strong> 12:00 PM</p>
+                                                        <p><strong>📍 Location:</strong> Fontys Hogeschool (R10), Rachelsmolen 1, 5612MA</p>
                                                     </div>
                                                     <div className="order-items-summary-card">
                                                         <h4>Order Summary</h4>
@@ -314,13 +329,15 @@ function Dashboard() {
                                             .map(order => (
                                                 <div key={order.id} className="order-card past">
                                                     <div className="order-header">
-                                                        <h4>Order #{order.id}</h4>
+                                                        <h4>🎫 Order #{order.id}</h4>
                                                         <span className={`status ${order.status}`}>{order.status}</span>
                                                     </div>
                                                     <div className="order-details">
                                                         <p><strong>Pickup Code:</strong> {order.pickupCode}</p>
                                                         <p><strong>Order Date:</strong> {new Date(order.orderDate).toLocaleDateString()}</p>
-                                                        <p><strong>Pickup Date:</strong> {new Date(order.pickupDate).toLocaleDateString()}</p>
+                                                        <p><strong>📅 Pickup Date:</strong> {new Date(order.pickupDate).toLocaleDateString()}</p>
+                                                        <p><strong>🕐 Pickup Time:</strong> 12:00 PM</p>
+                                                        <p><strong>📍 Location:</strong> Fontys Hogeschool (R10), Rachelsmolen 1, 5612MA</p>
                                                     </div>
                                                     <div className="order-items-summary-card">
                                                         <h4>Order Summary</h4>
@@ -379,12 +396,20 @@ function Dashboard() {
                             <div className="order-summary">
                                 <h3>Order Summary</h3>
                                 <div className="summary-row">
-                                    <span>Order ID:</span>
+                                    <span>🎫 Order ID:</span>
                                     <span>#{orderConfirmation.orderId}</span>
                                 </div>
                                 <div className="summary-row">
-                                    <span>Pickup Date:</span>
+                                    <span>📅 Pickup Date:</span>
                                     <span>{new Date(orderConfirmation.pickupDate).toLocaleDateString()}</span>
+                                </div>
+                                <div className="summary-row">
+                                    <span>🕐 Pickup Time:</span>
+                                    <span>12:00 PM</span>
+                                </div>
+                                <div className="summary-row">
+                                    <span>📍 Location:</span>
+                                    <span>Fontys Hogeschool (R10), Rachelsmolen 1, 5612MA</span>
                                 </div>
                                 <div className="order-items-summary">
                                     <strong>Items:</strong>
